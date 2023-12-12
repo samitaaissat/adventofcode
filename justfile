@@ -22,6 +22,9 @@ create day:
     cargo generate --path ./daily-template --name {{day}}
     just get-input {{day}}
 
+run day part:
+    cargo run --package {{day}} --bin {{part}}
+
 # You can find SESSION by using Chrome tools:
 # 1) Go to https://adventofcode.com/2022/day/1/input
 # 2) right-click -> inspect -> click the "Application" tab.
