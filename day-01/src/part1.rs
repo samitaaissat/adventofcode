@@ -1,4 +1,5 @@
 use crate::custom_error::AocError;
+use rayon::prelude::*;
 
 #[tracing::instrument]
 pub fn main() -> miette::Result<()> {
@@ -12,11 +13,15 @@ pub fn main() -> miette::Result<()> {
 pub fn process(
     input: &str,
 ) -> miette::Result<u32, AocError> {
-    let mut sum = 0;
-    for line in input.lines() {
-        sum += process_line(line)?;
-    }
-    Ok(sum)
+    let sum: Result<u32, _> = input
+        .par_lines() // Use parallel iterator over the lines
+        .map(|line| process_line(line)) // Process each line
+        .try_fold(|| 0u32, |acc, line_result| {
+            line_result.map(|value| acc + value)
+        }) // Try to fold results into a single sum
+        .try_reduce(|| 0u32, |a, b| Ok(a + b)); // Reduce results from different threads
+
+    sum.map_err(|e| e.into())
 }
 
 #[tracing::instrument]

@@ -293,6 +293,7 @@ dependencies = [
  "miette",
  "nom",
  "nom-supreme",
+ "rayon",
  "rstest",
  "test-log",
  "thiserror",
